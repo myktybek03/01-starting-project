@@ -1,46 +1,46 @@
 import { useState } from "react"
 import { useDispatch } from "react-redux"
-import { authActionTypes } from "../store/auth/authReducer"
-import classes from "./Auth.module.css"
+import styled from "styled-components"
+import { authActions } from "../store/auth/authSlice"
 
 const Auth = () => {
   const dispatch = useDispatch()
+
   const [formState, setFormState] = useState({
     email: "",
     password: "",
   })
 
   const inputChangeHandler = (name) => {
-    return (event) => {
-      setFormState((prevState) => ({
-        ...prevState,
-        [name]: event.target.value,
-      }))
+    return (e) => {
+      setFormState((prevState) => ({ ...prevState, [name]: e.target.value }))
     }
   }
 
-  const submitHandler = (event) => {
-    event.preventDefault()
-    if (formState.email === "test@gmail.com" && formState.password === "123123")
-      dispatch({
-        type: authActionTypes.LOG_IN,
-        payload: formState.email,
-      })
+  const SubmitHandler = (e) => {
+    e.preventDefault()
+
+    dispatch({
+      type: authActions.logIn,
+      email: formState.email,
+      password: formState.password,
+    })
   }
+
   return (
-    <main className={classes.auth}>
+    <AuthStyle>
       <section>
-        <form onSubmit={submitHandler}>
-          <div className={classes.control}>
+        <form onSubmit={SubmitHandler}>
+          <Control>
             <label htmlFor="email">Email</label>
             <input
-              type="email"
+              type="text"
               id="email"
               onChange={inputChangeHandler("email")}
               value={formState.email}
             />
-          </div>
-          <div className={classes.control}>
+          </Control>
+          <Control>
             <label htmlFor="password">Password</label>
             <input
               type="password"
@@ -48,12 +48,40 @@ const Auth = () => {
               onChange={inputChangeHandler("password")}
               value={formState.password}
             />
-          </div>
+          </Control>
           <button>Login</button>
         </form>
       </section>
-    </main>
+    </AuthStyle>
   )
 }
 
 export default Auth
+
+const AuthStyle = styled.main`
+  margin: 5rem auto;
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.2);
+  width: 25rem;
+  border-radius: 8px;
+  padding: 1rem;
+  text-align: center;
+  background-color: #f4f0fa;
+`
+
+const Control = styled.div`
+  margin-bottom: 0.5rem;
+  label {
+    display: block;
+    color: #616161;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+  input {
+    display: block;
+    width: 20rem;
+    margin: auto;
+    border-radius: 4px;
+    padding: 0.25rem;
+    border: 1px solid #ccc;
+  }
+`
